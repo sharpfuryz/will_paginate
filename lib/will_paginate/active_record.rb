@@ -2,11 +2,6 @@ require 'will_paginate/per_page'
 require 'will_paginate/page_number'
 require 'will_paginate/collection'
 require 'active_record'
-begin
-  require 'active_record/deprecated_finders'
-rescue LoadError
-  # only for Rails 4.1
-end
 
 module WillPaginate
   # = Paginating finders for ActiveRecord models
@@ -56,8 +51,8 @@ module WillPaginate
       end
 
       # fix for Rails 3.0
-      def find_last
-        if !loaded? and offset_value || limit_value
+      def find_last(*args)
+        if !loaded? && args.empty? && (offset_value || limit_value)
           @last ||= to_a.last
         else
           super
